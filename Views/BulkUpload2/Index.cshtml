@@ -1,0 +1,154 @@
+﻿@using Midrange.Helper;
+@model ImportExcel_v1.Models.FilterModel
+
+
+@section scripts{
+    <script src="~/Scripts/AppScripts/PagerScript.js"></script>
+}
+
+
+<style type="text/css">
+    .space-box {
+        margin: 10px;
+    }
+
+    .colWidth50 {
+        width: 50px;
+    }
+</style>
+
+@{
+    var grid = new WebGrid(source: Model.DataModel, canPage: true, rowsPerPage: Model.PageSize);
+    grid.Pager(WebGridPagerModes.All);
+}
+
+<br /><br />
+
+<div class="col-lg-12">
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            Bulk Upload
+        </div>
+        <div class="panel-body">
+            @using (Html.BeginForm("Index", "BulkUpload2", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-xs-7">
+                                    <input name="file" type="file" class="form-control"  />
+                                </div>
+                                <div class="col-xs-3">
+                                    <button class="btn btn-default" type="submit">
+                                        <span> <i class="fa fa-refresh"></i>  Import Data </span>
+                                    </button>
+                                </div>
+                            </div>
+                            <p></p>
+                            <div class="row">
+                                <div class="col-xs-10">
+                                    <div><b>File Location :</b> @Session["fileLocation"]</div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="col-lg-12">
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <h3 class="panel-title">Order Details</h3>
+        </div>
+        @using (Html.BeginForm("Index", "BulkUpload2", FormMethod.Post, new { @id = "form_header" }))
+        {
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-xs-4">
+                        <div class="form-group">
+                            <label for="" class="col-xs-5 control-label">Rows per page:</label>
+                            <div class="col-xs-4">
+                                @Html.DropDownListFor(m => m.PageSize,
+                                    new List<SelectListItem>
+                                    {
+                                        new SelectListItem() { Text = "5", Value = "5" },
+                                        new SelectListItem() { Text = "10", Value = "10" },
+                                        new SelectListItem() { Text = "20", Value = "20" }
+                                    }, new { @class = "form-control", Name = "pageSizeDDL" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xs-2">
+                        <div class="input-group">
+                            <button class="btn btn-default" type="submit" name="saveToDB" value="Save to DB">
+                                <span> <i class="fa fa-refresh"></i>  Save to Database </span>
+                            </button>
+                        </div>
+                    </div>
+
+                    @*<div class="col-xs-2"><p>Records :@{ var x = (Model.Page * Model.PageSize) >= Model.TotalCount ? Model.TotalCount : (Model.Page * Model.PageSize);  } @x out of @Model.TotalCount</p></div>*@
+                    <div class="col-xs-2"></div>
+                    @*<div class="col-xs-2">
+                                 <div class="input-group">
+                                     <div class="input-group-addon"><span class="glyphicon glyphicon-search"></span></div>
+                                     <input class="form-control" type="text" name="SearchText" id="SearchText" value="@Model.SearchText" />
+                                 </div>
+                        </div>*@
+                  
+                </div>
+
+                <hr />
+
+                @*}
+
+                    @using (Html.BeginForm("Assign", "BulkUpload2", FormMethod.Post ))
+                    {*@
+
+                <div class="col-lg-14">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="test" style="overflow: scroll; width: 100%">
+                                <div style="width: 1000px">
+                                    @if (Model != null)
+                                {
+                                @grid.GetHtml(
+                                            tableStyle: "table table-bordered", //table table-hover
+                                            headerStyle: "webgrid-header",
+                                            footerStyle: "webgrid-footer",
+                                            alternatingRowStyle: "webgrid-alternating-row",
+                                            selectedRowStyle: "webgrid-selected-row",
+                                            rowStyle: "webgrid-row-style",
+                                            columns: grid.Columns(
+                                                        grid.Column(header: "Row", format: @<text><div>@(item.WebGrid.Rows.IndexOf(item) + 1)</div></text>),
+                                                        grid.Column(header: "Location", format: @<input type="text" id="Location" name="location_@(item.WebGrid.Rows.IndexOf(item))" value="@item.Location" style="width:250px;" />), 
+                                                        grid.Column(header: "Rack Shelf", format: @<input type="text" id="RackShelf" name="rackShelf_@(item.WebGrid.Rows.IndexOf(item))" value="@item.RackShelf" style="width:50px;"/>),
+                                                        grid.Column(header: "DC Location", format: @<input type="text" id="DCLocation" name="dcLocation_@(item.WebGrid.Rows.IndexOf(item))" value="@item.DCLocation"   />), 
+                                                        grid.Column(header: "Customer", format: @<input type="text" id="Customer" name="customer_@(item.WebGrid.Rows.IndexOf(item))" value="@item.Customer" style="width:250px;" />),  
+                                                        grid.Column(header: "Serial Number", format: @<input type="text" id="SerialNumber" name="serialNumber_@(item.WebGrid.Rows.IndexOf(item))" value="@item.SerialNumber"   />),  
+                                                        grid.Column(header: "Model", format: @<input type="text" id="Model" name="model_@(item.WebGrid.Rows.IndexOf(item))" value="@item.Model"  />), 
+                                                        grid.Column(header: "Use State", format: @<input type="text" name="useState_@(item.WebGrid.Rows.IndexOf(item))" id="UseState" value="@item.UseState"  />),  
+                                                        grid.Column(header: "Local Name", format: @<input type="text" name="localName_@(item.WebGrid.Rows.IndexOf(item))" id="LocalName" value="@item.LocalName"   />), 
+                                                        grid.Column(header: "Asset Tag", format: @<input type="text" name="assetTag_@(item.WebGrid.Rows.IndexOf(item))" id="AssetTag" value="@item.AssetTag"   />) 
+                                                    ))
+
+                                }
+                                else
+                                {
+                                <div class="alert alert-info" role="alert">No Data</div>
+                                }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        }
+    </div>
+</div>

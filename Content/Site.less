@@ -1,0 +1,50 @@
+﻿@import "custom-variables.less";
+@import "bootstrap/mixins.less";
+
+body {
+    padding-top: 80px;
+    padding-bottom: 20px;
+}
+
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+/* Set padding to display errors that occur during databinding */
+.padding-error {
+    padding-top: 20px;
+}
+
+.body-content{
+    > footer {
+        > p {
+            font-size: 10px;
+        }
+    }
+}
+
+.form-buttons {
+    margin: 30px 3px;
+    text-align: center;
+}
+
+article {
+    > section {
+        padding: 10px 0;
+    }
+}
+
+.background-gray {
+    background-color: @gray-lighter;
+    padding: 10px;
+}
+
+@media only screen and (max-width: 767px) {
+    .nofloat {
+        float: none;
+        padding: 10px 15px;
+    }
+}

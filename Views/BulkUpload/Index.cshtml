@@ -1,0 +1,172 @@
+﻿@using Midrange.Helper;
+@model List<ImportExcel_v1.Models.ImportDeviceViewModel>
+
+<style type="text/css">
+    .edit-mode {
+        border-width: 1px;
+        height: 36px;
+        border-color: #E1E7EA;
+        outline: none !important;
+        border-radius: 2px;
+        position: relative;
+        width: 150px;
+    }
+
+    .edit-user {
+    }
+
+        .edit-user display-mode {
+        }
+
+    .save-user edit-mode {
+    }
+
+    .display-mode {
+    }
+
+    .cancel-user {
+    }
+
+    .webgrid-table {
+        font-family: Arial,Helvetica,sans-serif;
+        font-size: 14px;
+        font-weight: normal;
+        width: 650px;
+        display: table;
+        border-collapse: collapse;
+        border: solid px #C5C5C5;
+        background-color: white;
+    }
+
+        .webgrid-table td, th {
+            border: 1px solid #C5C5C5;
+            padding: 3px 7px 2px;
+        }
+
+    .webgrid-header, .webgrid-header a {
+        background-color: #E3E3E3;
+        color: black;
+        text-align: left;
+        text-decoration: none;
+    }
+
+    .webgrid-footer {
+    }
+
+    .webgrid-row-style {
+        padding: 3px 7px 2px;
+    }
+
+    .webgrid-alternating-row {
+        background-color: #F5F5F5;
+        padding: 3px 7px 2px;
+    }
+
+    .col1Width {
+        width: 50px;
+    }
+
+    .col2Width {
+        width: 200px;
+    }
+</style>
+ 
+@{
+    ViewBag.Title = "List of users";
+    var grid = new WebGrid(source: Model, canPage: true, rowsPerPage: 10);
+    grid.Pager(WebGridPagerModes.All);
+}
+ 
+
+
+<div class="col-lg-12">
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            Bulk Upload
+        </div>
+        <div class="panel-body">
+            @using (Html.BeginForm("Index", "BulkUpload", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-xs-7">
+                                    <input name="file" type="file" class="form-control" />
+                                </div>
+                                <div class="col-xs-3"> 
+                                    <button class="btn btn-default" type="submit">
+                                        <span> <i class="fa fa-refresh"></i>  Upload </span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@using (Html.BeginForm("Assign", "BulkUpload", FormMethod.Post))
+{ 
+    <div class="col-lg-12">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                Update Client
+            </div>
+            <div class="row">
+                @if (Model != null && Model.Count > 0)
+                {
+                    <div class="panel-body">
+
+                        <div class="test" style="overflow: scroll; width: 100%">
+                            <div style="width: 1000px">
+                                @grid.GetHtml( 
+                                        tableStyle: "webgrid-table",
+                                        headerStyle: "webgrid-header",
+                                        footerStyle: "webgrid-footer",
+                                        alternatingRowStyle: "webgrid-alternating-row",
+                                        selectedRowStyle: "webgrid-selected-row",
+                                        rowStyle: "webgrid-row-style",
+                                        columns: grid.Columns(
+                                                    grid.Column(header: "Row-Number", format: @<text><div>@(item.WebGrid.Rows.IndexOf(item) + 1)</div></text>),
+                                                    grid.Column("Location", "Location", format: @<input type="text" id="Location" name="location_@(item.WebGrid.Rows.IndexOf(item))" value="@item.Location" class="edit-mode" />, style: "colWidth"), 
+                                                    grid.Column("RackShelf", "RackShelf", format: @<input type="text" id="RackShelf" name="rackShelf_@(item.WebGrid.Rows.IndexOf(item))" value="@item.RackShelf" class="edit-mode" />, style: "width:199px"),
+                                                    grid.Column("DCLocation", "DCLocation", format: @<input type="text" id="DCLocation" name="dcLocation_@(item.WebGrid.Rows.IndexOf(item))" value="@item.DCLocation" class="edit-mode" />, style: "width:199px"),
+                                                    grid.Column("Customer", "Customer", format: @<input type="text" id="Customer" name="customer_@(item.WebGrid.Rows.IndexOf(item))" value="@item.Customer" class="edit-mode" />, style: "width:199px"),
+                                                    grid.Column("SerialNumber", "SerialNumber", format: @<input type="text" id="SerialNumber" name="serialNumber_@(item.WebGrid.Rows.IndexOf(item))" value="@item.SerialNumber" class="edit-mode" />, style: "width:199px"),
+                                                    grid.Column("Model", "Model", format: @<input type="text" id="Model" name="model_@(item.WebGrid.Rows.IndexOf(item))" value="@item.Model" class="edit-mode" />, style: "width:199px"),
+                                                    grid.Column("UseState", "UseState", format: @<input type="text" name="useState_@(item.WebGrid.Rows.IndexOf(item))" id="UseState" value="@item.UseState" class="edit-mode" />, style: "width:199px"),
+                                                    grid.Column("LocalName", "LocalName", format: @<input type="text" name="localName_@(item.WebGrid.Rows.IndexOf(item))" id="LocalName" value="@item.LocalName" class="edit-mode" />, style: "width:199px"),
+                                                    grid.Column("AssetTag", "Asset Tag", format: @<input type="text" name="assetTag_@(item.WebGrid.Rows.IndexOf(item))" id="AssetTag" value="@item.AssetTag" class="edit-mode" />, style: "width:199px")
+                                       ))
+                            </div>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-info" role="alert">No Data</div>
+                }
+            </div>
+          
+        </div>
+    </div>
+
+    <div class="panel-body">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-xs-3">
+                        <button class="btn btn-default" type="submit">
+                            <span> <i class="fa fa-refresh"></i>  Upload </span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+} 
